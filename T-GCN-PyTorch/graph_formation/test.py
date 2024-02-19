@@ -1,44 +1,65 @@
 import pandas as pd
 
-# Load your DataFrame
-df = pd.read_csv('florida_nodes.csv')
+# file_path = r'D:\GCN + LSTM\T-GCN-PyTorch\quick_test_data.csv'
+#
+# # Read the CSV file into a pandas DataFrame
+# df = pd.read_csv(file_path)
+#
+# # Count the total number of rows
+# total_rows = len(df)
+#
+# print("Total number of rows:", total_rows)
 
-df['StartTime(UTC)'] = pd.to_datetime(df['StartTime(UTC)'])
+import pandas as pd
+import time
 
-# Now to group them, first sort by time
-df = df.sort_values(by='StartTime(UTC)')
+import pandas as pd
+import time
 
-# Create a list to hold groups
-groups = []
+# Start timing
+start_time = time.time()
 
-# Create the first group with the first row
-current_group = [df.iloc[0]]
+weather2 = pd.read_csv(r'D:\GCN + LSTM\T-GCN-PyTorch\LSTW\weather_sample.csv')
+traffic2 = pd.read_csv(r'D:\GCN + LSTM\T-GCN-PyTorch\LSTW\traffic_full.csv')
 
-for i in range(1, len(df)):
-    # Calculate time difference from the last element in the current group
-    time_diff = df.iloc[i]['StartTime(UTC)'] - current_group[-1]['StartTime(UTC)']
+print(traffic2.head(10))
 
-    # Check if the difference is less than an hour and the location is different
-    if time_diff <= pd.Timedelta(hours=1) and (
-            df.iloc[i]['LocationLat_x'] != current_group[-1]['LocationLat_x'] or df.iloc[i]['LocationLng_x'] !=
-            current_group[-1]['LocationLng_x']):
-        current_group.append(df.iloc[i])
-    else:
-        # If not, save the current group and start a new one
-        groups.append(current_group)
-        current_group = [df.iloc[i]]
+traffic2['StartTime(UTC)'] = pd.to_datetime(traffic2['StartTime(UTC)'])
+weather2['StartTime(UTC)'] = pd.to_datetime(weather2['StartTime(UTC)'])
 
-# Don't forget to add the last group if it's not empty
-if current_group:
-    groups.append(current_group)
+# Drop duplicates
+traffic2 = traffic2.drop_duplicates(subset=['State', 'City', 'StartTime(UTC)'])
+weather2 = weather2.drop_duplicates(subset=['State', 'City', 'StartTime(UTC)'])
 
-# Now 'groups' is a list of lists, where each sublist is a group of events within 1 hour of each other
-# If you need to process these groups or convert them back into DataFrames:
-grouped_dfs = [pd.DataFrame(group) for group in groups]
+# Drop rows with NaN in specific columns
+traffic2 = traffic2.dropna(subset=['State', 'City', 'StartTime(UTC)', 'LocationLat', 'LocationLng', 'ZipCode'])
+weather2 = weather2.dropna(subset=['State', 'City', 'StartTime(UTC)', 'LocationLat', 'LocationLng', 'ZipCode'])
 
-# Now you can process each group (DataFrame) individually
-# For example, you can print out the groups or save them to separate CSV files.
-for i, group_df in enumerate(grouped_dfs):
-    print(f"Group {i}:")
-    print(group_df)
-    group_df.to_csv(f'grouped_csv/group_{i}.csv', index=False)
+# Sort both left and right DataFrames by 'StartTime(UTC)'
+weather2 = weather2.sort_values(by=['StartTime(UTC)'])
+traffic2 = traffic2.sort_values(by=['StartTime(UTC)'])
+
+One1 = pd.merge_asof(
+    weather2,
+    traffic2,
+    on='StartTime(UTC)',
+    by=['State', 'City'],
+    tolerance=pd.Timedelta(hours=1),
+    direction='nearest'
+)
+
+# Count the total number of rows
+total_rows = len(One1)
+
+print("Total number of rows:", total_rows)
+
+# Save merged data to a new CSV file without the adjacency column
+One1.to_csv('quick_data_2.csv', index=False)
+print("Merged data has been saved as 'merged_data.csv'")
+
+# Calculate and print execution time
+end_time = time.time()
+execution_time = end_time - start_time
+print("Execution time:", execution_time, "seconds")
+
+

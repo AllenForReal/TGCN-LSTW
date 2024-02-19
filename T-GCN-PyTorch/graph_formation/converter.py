@@ -1,7 +1,7 @@
 # import pandas as pd
 # import csv
 # # Set the input CSV file path and name (without double quotes)
-# input_csv_file = r'D:\RA work\TrafficEvents_Aug16_Dec20_Publish.csv'
+# input_csv_file = r'D:\RA work\traffic_full.csv'
 #
 # # Set the number of rows to read (e.g., 10,000)
 # num_rows_to_read = 10000
