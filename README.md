@@ -4,7 +4,7 @@
 ## Data availability:
 For the LSTW dataset check out Sobhan Moosavi's site: [data](https://smoosavi.org/datasets/lstw)
 ## Code availability:
-For the base models before modification: 
+Link to the two base models before modification: 
 [TGCN](https://github.com/lehaifeng/T-GCN/tree/master/T-GCN/T-GCN-PyTorch)
 [DSTGCN](https://github.com/yule-BUAA/DSTGCN/tree/master)
 ## Goal:
