@@ -1,4 +1,6 @@
 # TGCN-LSTW
+<img width="564" alt="image" src="https://github.com/AllenForReal/TGCN-LSTW/assets/85193490/b20fd2bd-0a9d-4d85-b8c8-986f0a70c62f">
+
 ## Data availability:
 For the LSTW dataset check out Sobhan Moosavi's site: [data](https://smoosavi.org/datasets/lstw)
 ## Code availability:
